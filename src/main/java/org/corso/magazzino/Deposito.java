@@ -1,7 +1,10 @@
 package org.corso.magazzino;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import org.corso.magazzino.exceptions.ErroreCaricoCapacitaExceededException;
+import org.corso.magazzino.exceptions.ErroreScaricoProdottoNegativoException;
+import org.corso.magazzino.exceptions.ErroreScaricoProdottoNonEsistenteException;
 
 public class Deposito {
     private String nome;
@@ -18,14 +21,36 @@ public class Deposito {
         this.capacitaMassima = capacitaMassima;
     }
 
-    public void caricoDeposito(Prodotto prodotto, int quantita) {
-        if (prodotto != null) {
-            int nuovaEsistenza = 0;
-            if (prodotti.get(prodotto) != null) {
-                nuovaEsistenza = prodotti.get(prodotto) + quantita;
-            }
-            prodotti.put(prodotto, nuovaEsistenza + quantita);
-        }
+    public void caricoDeposito(Prodotto prodotto, int quantita) throws ErroreCaricoCapacitaExceededException {
+        if (capacitaMassima < capacitaMassima + quantita)
+            throw new ErroreCaricoCapacitaExceededException();
+        int nuovaEsistenza = quantita;
+        if (prodotti.get(prodotto) != null)
+            nuovaEsistenza = prodotti.get(prodotto) + quantita;
+
+        prodotti.put(prodotto, nuovaEsistenza);
+        capacitaMassima += nuovaEsistenza;
+    }
+
+    public void scaricoDeposito(Prodotto prodotto, int quantita)
+            throws ErroreScaricoProdottoNonEsistenteException, ErroreScaricoProdottoNegativoException {
+        if (prodotti.get(prodotto) == null)
+            throw new ErroreScaricoProdottoNonEsistenteException();
+        if (prodotti.get(prodotto) - quantita < 0)
+            throw new ErroreScaricoProdottoNegativoException();
+        if (prodotti.get(prodotto) - quantita == 0)
+            prodotti.remove(prodotto);
+        else
+            prodotti.put(prodotto, prodotti.get(prodotto) - quantita);
+
+    }
+
+    public String inventario() {
+        String stringa = new String();
+        Set<Prodotto> products = prodotti.keySet();
+        for(Prodotto item : products)
+            stringa = item.getNomeProdotto() + " " + item.getCostoProdotto() + " " + this.getNome() + "\n";
+        return stringa;
     }
 
     public int getCapacitaMassima() {

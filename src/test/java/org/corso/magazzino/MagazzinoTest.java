@@ -1,5 +1,6 @@
 package org.corso.magazzino;
 
+import org.corso.magazzino.exceptions.ErroreCaricoCapacitaExceededException;
 import org.corso.magazzino.exceptions.ErroreCaricoException;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,15 +31,12 @@ public class MagazzinoTest {
     }
 
     @Test(expected = ErroreCaricoException.class)
-    public void eccezioneSeProdottoNullo_carico() {
+    public void eccezioneSeProdottoNullo_carico() throws ErroreCaricoException {
         // cosa dobbiamo fare per testare il metodo aspettandoci che se passiamo
         // un null come prodotto deve essere generata una eccezione
         // magazzino.carico(prodotto, quantita);
-       try {
-           magazzino.carico(null, 10);
-       } catch (ErroreCaricoException e) {
-           //NOTHING
-       }
+
+        magazzino.carico(null, 10);
     }
 
     /**
@@ -54,7 +52,7 @@ public class MagazzinoTest {
      * @throws ErroreCaricoException
      */
     @Test
-    public void verificaSelezioneCorrettoDepositoAlimentari_carico() throws ErroreCaricoException {
+    public void verificaSelezioneCorrettoDepositoAlimentari_carico() throws ErroreCaricoException, ErroreCaricoCapacitaExceededException {
         Prodotto prodottoAlimentareDaCaricare = new ProdottoAlimentare("Spaghetti", "Barilla", 100,
                 LocalDate.of(2021, 04, 28));
 
@@ -72,7 +70,12 @@ public class MagazzinoTest {
 
     // provare a fare una cosa per il deposito non alimentari
     @Test
-    public void verificaSelezioneCorrettoDepositoNonAlimentari_carico() throws ErroreCaricoException {
+    public void verificaSelezioneCorrettoDepositoNonAlimentari_carico() throws ErroreCaricoException, ErroreCaricoCapacitaExceededException {
+        Prodotto prodottoNonAlimentareDaCaricare = new ProdottoNonAlimentare("Penna", "Bic", 50, LocalDate.of(2021, 04, 28));
+        DepositoNonAlimentare depositoNonAlimentareSpiato = Mockito.spy(new DepositoNonAlimentare(Magazzino.DEPOSITO_NON_ALIMENTARI, 30));
+        Magazzino mag = new Magazzino(depositoAlimentari, depositoNonAlimentareSpiato);
+        mag.carico(prodottoNonAlimentareDaCaricare, 5);
+        verify(depositoNonAlimentareSpiato, atLeastOnce()).caricoDeposito(prodottoNonAlimentareDaCaricare, 5);
 
     }
 
