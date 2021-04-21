@@ -32,16 +32,8 @@ public class Deposito {
         return capacitaMassima;
     }
 
-    public void setCapacitaMassima(int capacitaMassima) {
-        this.capacitaMassima = capacitaMassima;
-    }
-
     public String getNome() {
         return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     @Override

@@ -34,6 +34,11 @@ public class MagazzinoTest {
         // cosa dobbiamo fare per testare il metodo aspettandoci che se passiamo
         // un null come prodotto deve essere generata una eccezione
         // magazzino.carico(prodotto, quantita);
+       try {
+           magazzino.carico(null, 10);
+       } catch (ErroreCaricoException e) {
+           //NOTHING
+       }
     }
 
     /**
