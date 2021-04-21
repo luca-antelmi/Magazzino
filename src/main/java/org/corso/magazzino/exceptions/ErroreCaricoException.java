@@ -1,5 +1,5 @@
 package org.corso.magazzino.exceptions;
 
-public class ErroreCaricoException extends Exception{
+public class ErroreCaricoException extends Exception {
 
 }

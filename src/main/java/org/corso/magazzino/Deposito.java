@@ -6,28 +6,27 @@ import java.util.Map;
 public class Deposito {
     private String nome;
     private int capacitaMassima;
-    private Map<Prodotto , Integer> prodotti;
+    private Map<Prodotto, Integer> prodotti;
 
-    public Deposito(){
+    public Deposito() {
         prodotti = new HashMap<>();
     }
 
-    public Deposito(String nome, int capacitaMassima){
+    public Deposito(String nome, int capacitaMassima) {
         this();
         this.nome = nome;
         this.capacitaMassima = capacitaMassima;
     }
 
-    public void caricoDeposito(Prodotto prodotto,int quantita) {
-        if(prodotto != null){
+    public void caricoDeposito(Prodotto prodotto, int quantita) {
+        if (prodotto != null) {
             int nuovaEsistenza = 0;
-            if(prodotti.get(prodotto) != null){
+            if (prodotti.get(prodotto) != null) {
                 nuovaEsistenza = prodotti.get(prodotto) + quantita;
             }
             prodotti.put(prodotto, nuovaEsistenza + quantita);
         }
     }
-
 
     public int getCapacitaMassima() {
         return capacitaMassima;
@@ -69,5 +68,5 @@ public class Deposito {
             return false;
         return true;
     }
-    
+
 }
