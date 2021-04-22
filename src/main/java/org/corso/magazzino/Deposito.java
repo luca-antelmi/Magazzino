@@ -40,11 +40,13 @@ public class Deposito {
             throw new ErroreScaricoProdottoNonEsistenteException();
         if (prodotti.get(prodotto) - quantita < 0)
             throw new ErroreScaricoProdottoNegativoException();
-        if (prodotti.get(prodotto) - quantita == 0)
+        if (prodotti.get(prodotto) - quantita == 0) {
             prodotti.remove(prodotto);
-        else
+            capacitaAttuale -= quantita;
+        } else {
             prodotti.put(prodotto, prodotti.get(prodotto) - quantita);
-
+            capacitaAttuale -= quantita;
+        }
     }
 
     public String inventario() {
