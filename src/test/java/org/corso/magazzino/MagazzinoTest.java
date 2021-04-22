@@ -1,7 +1,9 @@
 package org.corso.magazzino;
 
-import org.corso.magazzino.exceptions.ErroreCaricoCapacitaExceededException;
 import org.corso.magazzino.exceptions.ErroreCaricoException;
+import org.corso.magazzino.exceptions.ErroreScaricoException;
+import org.corso.magazzino.exceptions.ErroreScaricoProdottoNegativoException;
+import org.corso.magazzino.exceptions.ErroreScaricoProdottoNonEsistenteException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,12 +24,15 @@ public class MagazzinoTest {
     @Mock
     private DepositoNonAlimentare depositoNonAlimentari;
 
+    private Prodotto prodottoAlimentareDiTest;
+
     @Before
     public void setUp() {
         depositoAlimentari = new DepositoAlimentare(Magazzino.DEPOSITO_ALIMENTARI, 20);
         depositoNonAlimentari = new DepositoNonAlimentare(Magazzino.DEPOSITO_NON_ALIMENTARI, 50);
         magazzino = new Magazzino(depositoAlimentari, depositoNonAlimentari);
         MockitoAnnotations.openMocks(this);
+        prodottoAlimentareDiTest = new ProdottoAlimentare("Gelato", "Algida", 10, LocalDate.of(2021, 04, 28));
     }
 
     @Test(expected = ErroreCaricoException.class)
@@ -37,6 +42,11 @@ public class MagazzinoTest {
         // magazzino.carico(prodotto, quantita);
 
         magazzino.carico(null, 10);
+    }
+
+    @Test(expected = ErroreScaricoException.class)
+    public void eccezioneSeProdottoNullo_scarico() throws ErroreScaricoException {
+        magazzino.scarico(null, 5);
     }
 
     /**
@@ -52,7 +62,7 @@ public class MagazzinoTest {
      * @throws ErroreCaricoException
      */
     @Test
-    public void verificaSelezioneCorrettoDepositoAlimentari_carico() throws ErroreCaricoException, ErroreCaricoCapacitaExceededException {
+    public void verificaSelezioneCorrettoDepositoAlimentari_carico() throws ErroreCaricoException {
         Prodotto prodottoAlimentareDaCaricare = new ProdottoAlimentare("Spaghetti", "Barilla", 100,
                 LocalDate.of(2021, 04, 28));
 
@@ -70,13 +80,24 @@ public class MagazzinoTest {
 
     // provare a fare una cosa per il deposito non alimentari
     @Test
-    public void verificaSelezioneCorrettoDepositoNonAlimentari_carico() throws ErroreCaricoException, ErroreCaricoCapacitaExceededException {
-        Prodotto prodottoNonAlimentareDaCaricare = new ProdottoNonAlimentare("Penna", "Bic", 50, LocalDate.of(2021, 04, 28));
-        DepositoNonAlimentare depositoNonAlimentareSpiato = Mockito.spy(new DepositoNonAlimentare(Magazzino.DEPOSITO_NON_ALIMENTARI, 30));
+    public void verificaSelezioneCorrettoDepositoNonAlimentari_carico() throws ErroreCaricoException {
+        Prodotto prodottoNonAlimentareDaCaricare = new ProdottoNonAlimentare("Penna", "Bic", 50, null);
+        DepositoNonAlimentare depositoNonAlimentareSpiato = Mockito
+                .spy(new DepositoNonAlimentare(Magazzino.DEPOSITO_NON_ALIMENTARI, 30));
         Magazzino mag = new Magazzino(depositoAlimentari, depositoNonAlimentareSpiato);
         mag.carico(prodottoNonAlimentareDaCaricare, 5);
         verify(depositoNonAlimentareSpiato, atLeastOnce()).caricoDeposito(prodottoNonAlimentareDaCaricare, 5);
 
+    }
+
+    @Test(expected = ErroreScaricoProdottoNonEsistenteException.class)
+    public void eccezioneSeScaricoProdottoNonInDeposito() throws ErroreScaricoProdottoNonEsistenteException {
+        try {
+            depositoAlimentari.scaricoDeposito(prodottoAlimentareDiTest, 5);
+        } catch (ErroreScaricoProdottoNegativoException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }

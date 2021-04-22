@@ -1,6 +1,5 @@
 package org.corso.magazzino;
 
-import org.corso.magazzino.exceptions.ErroreCaricoCapacitaExceededException;
 import org.corso.magazzino.exceptions.ErroreCaricoException;
 import org.corso.magazzino.exceptions.ErroreScaricoException;
 import org.corso.magazzino.exceptions.ErroreScaricoProdottoNegativoException;
@@ -36,19 +35,10 @@ public class Magazzino {
             throw new ErroreCaricoException();
 
         if (prodotto.getData() != null)
-            try {
-                depositi.get(DEPOSITO_ALIMENTARI).caricoDeposito(prodotto, quantita);
-            } catch (ErroreCaricoCapacitaExceededException exception) {
+            depositi.get(DEPOSITO_ALIMENTARI).caricoDeposito(prodotto, quantita);
 
-                exception.getMessage();
-            }
         else
-            try {
-                depositi.get(DEPOSITO_NON_ALIMENTARI).caricoDeposito(prodotto, quantita);
-            } catch (ErroreCaricoCapacitaExceededException exception) {
-                exception.getMessage();
-            }
-
+            depositi.get(DEPOSITO_NON_ALIMENTARI).caricoDeposito(prodotto, quantita);
     }
 
     public void scarico(Prodotto prodotto, int quantita) throws ErroreScaricoException {

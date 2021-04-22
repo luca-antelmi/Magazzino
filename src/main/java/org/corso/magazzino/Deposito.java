@@ -2,7 +2,6 @@ package org.corso.magazzino;
 
 import java.util.*;
 
-import org.corso.magazzino.exceptions.ErroreCaricoCapacitaExceededException;
 import org.corso.magazzino.exceptions.ErroreScaricoProdottoNegativoException;
 import org.corso.magazzino.exceptions.ErroreScaricoProdottoNonEsistenteException;
 
@@ -21,9 +20,7 @@ public class Deposito {
         this.capacitaMassima = capacitaMassima;
     }
 
-    public void caricoDeposito(Prodotto prodotto, int quantita) throws ErroreCaricoCapacitaExceededException {
-        if (capacitaMassima < capacitaMassima + quantita)
-            throw new ErroreCaricoCapacitaExceededException();
+    public void caricoDeposito(Prodotto prodotto, int quantita) {
         int nuovaEsistenza = quantita;
         if (prodotti.get(prodotto) != null)
             nuovaEsistenza = prodotti.get(prodotto) + quantita;
@@ -48,7 +45,7 @@ public class Deposito {
     public String inventario() {
         String stringa = new String();
         Set<Prodotto> products = prodotti.keySet();
-        for(Prodotto item : products)
+        for (Prodotto item : products)
             stringa = item.getNomeProdotto() + " " + item.getCostoProdotto() + " " + this.getNome() + "\n";
         return stringa;
     }
