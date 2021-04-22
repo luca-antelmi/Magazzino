@@ -2,8 +2,6 @@ package org.corso.magazzino;
 
 import org.corso.magazzino.exceptions.ErroreCaricoException;
 import org.corso.magazzino.exceptions.ErroreScaricoException;
-import org.corso.magazzino.exceptions.ErroreScaricoProdottoNegativoException;
-import org.corso.magazzino.exceptions.ErroreScaricoProdottoNonEsistenteException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +22,6 @@ public class MagazzinoTest {
     @Mock
     private DepositoNonAlimentare depositoNonAlimentari;
 
-    private Prodotto prodottoAlimentareDiTest;
 
     @Before
     public void setUp() {
@@ -32,7 +29,6 @@ public class MagazzinoTest {
         depositoNonAlimentari = new DepositoNonAlimentare(Magazzino.DEPOSITO_NON_ALIMENTARI, 50);
         magazzino = new Magazzino(depositoAlimentari, depositoNonAlimentari);
         MockitoAnnotations.openMocks(this);
-        prodottoAlimentareDiTest = new ProdottoAlimentare("Gelato", "Algida", 10, LocalDate.of(2021, 04, 28));
     }
 
     @Test(expected = ErroreCaricoException.class)
@@ -90,14 +86,6 @@ public class MagazzinoTest {
 
     }
 
-    @Test(expected = ErroreScaricoProdottoNonEsistenteException.class)
-    public void eccezioneSeScaricoProdottoNonInDeposito() throws ErroreScaricoProdottoNonEsistenteException {
-        try {
-            depositoAlimentari.scaricoDeposito(prodottoAlimentareDiTest, 5);
-        } catch (ErroreScaricoProdottoNegativoException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+  
 
 }
