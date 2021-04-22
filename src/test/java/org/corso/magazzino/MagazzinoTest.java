@@ -1,5 +1,6 @@
 package org.corso.magazzino;
 
+import org.corso.magazzino.exceptions.ErroreCaricoCapacitaExceeded;
 import org.corso.magazzino.exceptions.ErroreCaricoException;
 import org.corso.magazzino.exceptions.ErroreScaricoException;
 import org.junit.Before;
@@ -71,7 +72,12 @@ public class MagazzinoTest {
         mag.carico(prodottoAlimentareDaCaricare, 30);
         // e siccome ho necessitá di sapere se effettivamente verrá chiamato (almeno una
         // volta) chiedo a mockito di farlo tramite questa istruzione
-        verify(depositoAlimentareSpiato, atLeastOnce()).caricoDeposito(prodottoAlimentareDaCaricare, 30);
+        try {
+            verify(depositoAlimentareSpiato, atLeastOnce()).caricoDeposito(prodottoAlimentareDaCaricare, 30);
+        } catch (ErroreCaricoCapacitaExceeded e) {
+            //NOTHING
+            e.printStackTrace();
+        }
     }
 
     // provare a fare una cosa per il deposito non alimentari
@@ -82,7 +88,12 @@ public class MagazzinoTest {
                 .spy(new DepositoNonAlimentare(Magazzino.DEPOSITO_NON_ALIMENTARI, 30));
         Magazzino mag = new Magazzino(depositoAlimentari, depositoNonAlimentareSpiato);
         mag.carico(prodottoNonAlimentareDaCaricare, 5);
-        verify(depositoNonAlimentareSpiato, atLeastOnce()).caricoDeposito(prodottoNonAlimentareDaCaricare, 5);
+        try {
+            verify(depositoNonAlimentareSpiato, atLeastOnce()).caricoDeposito(prodottoNonAlimentareDaCaricare, 5);
+        } catch (ErroreCaricoCapacitaExceeded e) {
+            //NOTHING
+            e.printStackTrace();
+        }
 
     }
 

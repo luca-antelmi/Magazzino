@@ -1,7 +1,10 @@
 package org.corso.magazzino;
 
+import static org.junit.Assert.assertEquals;
+
 import java.time.LocalDate;
 
+import org.corso.magazzino.exceptions.ErroreCaricoCapacitaExceeded;
 import org.corso.magazzino.exceptions.ErroreScaricoProdottoNegativoException;
 import org.corso.magazzino.exceptions.ErroreScaricoProdottoNonEsistenteException;
 import org.junit.Before;
@@ -24,8 +27,27 @@ public class DepositoAlimentareTest {
         try {
             depositoAlimentareDiTest.scaricoDeposito(prodottoAlimentareDiTest, 5);
         } catch (ErroreScaricoProdottoNegativoException e) {
-            // TODO Auto-generated catch block
+            //NOTHING
             e.printStackTrace();
+        }
+    }
+
+    @Test(expected = ErroreCaricoCapacitaExceeded.class)
+    public void eccezioneSeCaricoProdottoConDepositoPieno() throws ErroreCaricoCapacitaExceeded{
+        depositoAlimentareDiTest.caricoDeposito(prodottoAlimentareDiTest, 500);
+    }
+
+    @Test
+    public void verificaCapacitaAttualeSeInserimentoProdotto() {
+        assertEquals(depositoAlimentareDiTest.getCapacitaAttuale(), 0);
+        try {
+            depositoAlimentareDiTest.caricoDeposito(prodottoAlimentareDiTest, 10);
+        } catch (ErroreCaricoCapacitaExceeded e) {
+            //NOTHING
+            e.printStackTrace();
+        }
+        finally{
+            assertEquals(depositoAlimentareDiTest.getCapacitaAttuale(), 10);
         }
     }
     
